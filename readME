@@ -1,0 +1,50 @@
+# Titanic Classification Using K-Nearest Neighbors (KNN)
+
+## Project Overview
+This project applies the **K-Nearest Neighbors (KNN)** algorithm to the classic Kaggle Titanic dataset using `scikit-learn`. The objective is to predict passenger survival based on demographic, socio-economic, and itinerary features. The repository demonstrates a structured machine learning pipeline focused on rigorous data preprocessing, handling distance-sensitive data variations, and hyperparameter optimization.
+
+---
+
+## Objectives
+* **Data Cleaning & Feature Engineering:** Handle structured data anomalies, extract meaningful features, and resolve missing values appropriately.
+* **Distance-Based Normalization:** Mitigate feature scale dominance by applying geometric transformations.
+* **Model Implementation & Evaluation:** Construct a baseline classification model and evaluate performance across multiple metric dimensions (Precision, Recall, Accuracy, F1-Score).
+* **Hyperparameter Optimization:** Conduct an exhaustive parameter search to locate the mathematically optimal value for $K$.
+
+---
+
+## Machine Learning Pipeline
+
+### 1. Data Preprocessing & Cleaning
+Because KNN relies on computing spatial distances between data vectors, raw textual and missing values must be thoroughly processed before training:
+* **Feature Pruning:** Removed high-cardinality, non-predictive identifiers (`PassengerId`, `Name`, `Ticket`, `Cabin`).
+* **Binary Encoding:** Converted the categorical variable `Sex` into a binary indicator (`female: 0`, `male: 1`).
+* **Imputation & Row Deletion:** * Missing `Age` records were resolved using the dataset's median value to prevent distributional distortion.
+    * Rows missing structural data in `Embarked` were safely dropped.
+* **One-Hot Encoding:** Transformed multi-categorical inputs (`Embarked`) into separate, localized indicator matrices via dummy variables.
+
+### 2. Feature Scaling (Data Normalization)
+Distance-based classifiers are highly sensitive to variations in feature magnitude. Without uniform scaling, continuous features with wide structural variances (e.g., `Fare`) would completely overwhelm binary-encoded attributes during the distance-calculation phase. 
+* Implemented **`StandardScaler`** to shift continuous values to $z$-scores ($\mu = 0, \sigma = 1$).
+* *Crucial Practice:* Data scaling was performed strictly **after** splitting the dataset into training and test arrays to prevent **data leakage**.
+
+### 3. Model Architecture & Metrics
+The model was evaluated using Scikit-Learn's `KNeighborsClassifier`. While standard metric scores like accuracy are evaluated, the primary target benchmark is the **F1-Score**:
+
+$$\text{F1-Score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}$$
+
+The F1-Score serves as the ideal benchmark here, balance-testing the model's ability to maximize passenger survivor capture (Recall) while maintaining categorical exactness (Precision).
+
+### 4. Hyperparameter Tuning Loop
+A parameter sweeping function, `find_best_k()`, was constructed to systematically iterate through odd integer counts of $K$ from 1 to 25. Odd numbers were prioritized to mathematically guarantee tie-breaking resolutions during class voting blocks. 
+
+* **Optimal Hyperparameter Discovered:** $K = 17$
+* **Optimized Performance Baseline:** ~`0.7468` F1-Score
+
+---
+
+## Repository Structure
+```text
+├── index.ipynb          # The principal development Jupyter Notebook
+├── titanic.csv          # Structured source CSV data
+└── README.md            # Detailed project summary and findings
