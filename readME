@@ -43,8 +43,3 @@ A parameter sweeping function, `find_best_k()`, was constructed to systematicall
 
 ---
 
-## Repository Structure
-```text
-├── index.ipynb          # The principal development Jupyter Notebook
-├── titanic.csv          # Structured source CSV data
-└── README.md            # Detailed project summary and findings
